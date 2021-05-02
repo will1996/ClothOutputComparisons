@@ -1,4 +1,5 @@
 use std::fs;
+use std::io;
 fn main() {
    let mut args = std::env::args().skip(1) ;
    let verts1 = read_obj_verts(args.next().unwrap());
@@ -11,6 +12,20 @@ fn main() {
    }
 }
 
+
+fn read_obj_folder(dir_path : String)->io::Result<Vec<String>>{
+    let mut paths :Vec<String>= Vec::new();
+    for entry in fs::read_dir(&dir_path)?{
+        let entry = entry?;
+        let path = entry.path();
+        let path = path.to_str().unwrap().to_owned();
+        if path.ends_with(".obj"){
+            paths.push(path);
+        }
+    }
+    paths.sort();
+    return Ok(paths);
+}
 
 fn read_obj_verts(file_path : String)->Vec<Vertex>{
            //let msg = format!("File not found at specified address {}",file_path);
